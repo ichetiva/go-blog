@@ -34,7 +34,7 @@ func (s UserService) Create(username, password string) *postgres.User {
 }
 
 func (s UserService) Authorize(username, password string) (string, error) {
-	user := s.UserDAO.Get(username)
+	user := s.UserDAO.GetByUsername(username)
 
 	if user == nil {
 		return "", errors.New("user not found")
