@@ -19,6 +19,7 @@ type UserService struct {
 type IUserService interface {
 	Create(username, password string) *postgres.User
 	Authorize(username, password string) (string, error)
+	Get(userID uint) *postgres.User
 }
 
 func NewUserService(db *gorm.DB, config *config.Config) IUserService {
@@ -31,6 +32,10 @@ func NewUserService(db *gorm.DB, config *config.Config) IUserService {
 func (s UserService) Create(username, password string) *postgres.User {
 	password, _ = hash.HashPassword(password)
 	return s.UserDAO.Create(username, password)
+}
+
+func (s UserService) Get(userID uint) *postgres.User {
+	return s.UserDAO.GetByID(userID)
 }
 
 func (s UserService) Authorize(username, password string) (string, error) {

@@ -7,6 +7,7 @@ import (
 	"github.com/ichetiva/go-blog/config"
 	"github.com/ichetiva/go-blog/internal/schemes"
 	"github.com/ichetiva/go-blog/internal/services"
+	"github.com/ichetiva/go-blog/pkg/jwt"
 	"gorm.io/gorm"
 )
 
@@ -69,5 +70,20 @@ func (c UserController) SignInView(ctx *gin.Context) {
 		"data": schemes.ResSignIn{
 			AccessToken: token,
 		},
+	})
+}
+
+func (c UserController) GetMeView(ctx *gin.Context) {
+	token := ctx.Request.Header.Get("Token")
+	claims, err := jwt.Decode(token, c.Config.SecretKey)
+	if err != nil {
+		ctx.JSON(http.StatusForbidden, gin.H{
+			"message": err.Error(),
+		})
+	}
+
+	user := c.UserService.Get(claims.UserID)
+	ctx.JSON(http.StatusOK, gin.H{
+		"data": user,
 	})
 }

@@ -12,6 +12,7 @@ type UserDAO struct {
 type IUserDAO interface {
 	Create(username, password string) *postgres.User
 	GetByUsername(username string) *postgres.User
+	GetByID(userID uint) *postgres.User
 }
 
 func (dao *UserDAO) Create(username, password string) *postgres.User {
@@ -26,5 +27,11 @@ func (dao *UserDAO) Create(username, password string) *postgres.User {
 func (dao *UserDAO) GetByUsername(username string) *postgres.User {
 	var user postgres.User
 	dao.DB.Where("username = ?", username).First(&user)
+	return &user
+}
+
+func (dao *UserDAO) GetByID(userID uint) *postgres.User {
+	var user postgres.User
+	dao.DB.Where("id = ?", userID).First(&user)
 	return &user
 }
