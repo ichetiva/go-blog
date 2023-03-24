@@ -45,6 +45,6 @@ func (s UserService) Authorize(username, password string) (string, error) {
 		return "", errors.New("passwords mismatch")
 	}
 
-	token, err := jwt.NewJWT(user.ID, s.Config.SecretKey)
+	token, err := jwt.Encode(user.ID, s.Config.SecretKey)
 	return token, err
 }

@@ -11,7 +11,7 @@ type Claims struct {
 	jwt.RegisteredClaims
 }
 
-func NewJWT(userID uint, secretKey string) (string, error) {
+func Encode(userID uint, secretKey string) (string, error) {
 	claims := Claims{
 		userID,
 		jwt.RegisteredClaims{
