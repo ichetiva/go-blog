@@ -1,0 +1,33 @@
+version: '3'
+
+services:
+  api:
+    build: .
+    command: go run ./cmd/app
+    restart: unless-stopped
+    env_file: .env
+    volumes:
+      - .:/code/
+    ports:
+      - "8080:8080"
+    networks:
+      blog:
+        aliases:
+          - blog-api
+  
+  db:
+    image: postgres:13
+    restart: unless-stopped
+    env_file: .env
+    volumes:
+      - ./postgres_data:/var/lib/postgresql/data
+    expose:
+      - 5432
+    networks:
+      blog:
+        aliases:
+          - blog-db
+
+networks:
+  blog:
+    external: true

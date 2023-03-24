@@ -23,3 +23,9 @@ go.work
 # SQLite database file
 *.sqlite3
 *.db
+
+# Enviroment
+.env
+
+# Docker data folders
+postgres_data/

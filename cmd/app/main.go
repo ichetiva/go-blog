@@ -12,7 +12,7 @@ import (
 func main() {
 	config := config.NewConfig()
 
-	db, err := postgres.NewDB()
+	db, err := postgres.NewDB(config)
 	if err != nil {
 		log.Fatal("Connection to datbase error")
 	}

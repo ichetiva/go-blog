@@ -1,7 +1,10 @@
 package postgres
 
 import (
-	"gorm.io/driver/sqlite"
+	"fmt"
+
+	"github.com/ichetiva/go-blog/config"
+	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
@@ -11,11 +14,17 @@ type User struct {
 	Password string
 }
 
-func NewDB() (*gorm.DB, error) {
-	db, err := gorm.Open(sqlite.Open("db.sqlite3"), &gorm.Config{})
+func NewDB(config *config.Config) (*gorm.DB, error) {
+	dsn := fmt.Sprintf(
+		"postgres://%s:%s@%s:5432/%s?sslmode=disable",
+		config.PostgresUser,
+		config.PostgresPassword,
+		config.PostgresHost,
+		config.PostgresDatabase,
+	)
+	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		return nil, err
 	}
-
 	return db, nil
 }
