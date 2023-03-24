@@ -11,6 +11,8 @@ type Config struct {
 	PostgresPassword string
 	PostgresHost     string
 	PostgresDatabase string
+
+	SecretKey string
 }
 
 func NewConfig() *Config {
@@ -22,5 +24,7 @@ func NewConfig() *Config {
 		PostgresPassword: os.Getenv("POSTGRES_PASSWORD"),
 		PostgresHost:     os.Getenv("POSTGRES_HOST"),
 		PostgresDatabase: os.Getenv("POSTGRES_DB"),
+
+		SecretKey: os.Getenv("SECRET_KEY"),
 	}
 }
