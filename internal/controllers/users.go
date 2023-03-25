@@ -43,7 +43,7 @@ func (c UserController) SignUpView(ctx *gin.Context) {
 
 	if data.Password != data.Password1 {
 		ctx.JSON(http.StatusBadRequest, gin.H{
-			"message": "Passwords not match",
+			"message": "Passwords mismatch",
 		})
 		return
 	}
