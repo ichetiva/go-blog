@@ -50,6 +50,12 @@ func (c PostController) GetPostView(ctx *gin.Context) {
 	}
 
 	post := c.PostService.Get(postID)
+	if post == nil {
+		ctx.JSON(http.StatusNotFound, gin.H{
+			"message": "Post not found",
+		})
+		return
+	}
 	ctx.JSON(http.StatusOK, gin.H{
 		"data": post,
 	})

@@ -16,7 +16,8 @@ type User struct {
 
 type Post struct {
 	gorm.Model
-	User    User `gorm:"embeded"`
+	UserID  uint
+	User    User `gorm:"foreignKey:UserID"`
 	Title   string
 	Content string
 }
