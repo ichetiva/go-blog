@@ -29,6 +29,7 @@ func NewUserController(config *config.Config, db *gorm.DB) Controller {
 func (c UserController) Register(router *gin.Engine) {
 	router.POST("/users/sign-up", c.SignUpView)
 	router.POST("/users/sign-in", c.SignInView)
+	router.GET("/users/me", c.GetMeView)
 }
 
 func (c UserController) SignUpView(ctx *gin.Context) {
@@ -37,12 +38,14 @@ func (c UserController) SignUpView(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, gin.H{
 			"message": "Non-valid data was received",
 		})
+		return
 	}
 
 	if data.Password != data.Password1 {
 		ctx.JSON(http.StatusBadRequest, gin.H{
 			"message": "Passwords not match",
 		})
+		return
 	}
 
 	user := c.UserService.Create(data.Username, data.Password)
@@ -57,6 +60,7 @@ func (c UserController) SignInView(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, gin.H{
 			"message": "Non-valid data was received",
 		})
+		return
 	}
 
 	token, err := c.UserService.Authorize(data.Username, data.Password)
@@ -64,6 +68,7 @@ func (c UserController) SignInView(ctx *gin.Context) {
 		ctx.JSON(http.StatusForbidden, gin.H{
 			"message": err.Error(),
 		})
+		return
 	}
 
 	ctx.JSON(http.StatusOK, gin.H{
@@ -78,8 +83,9 @@ func (c UserController) GetMeView(ctx *gin.Context) {
 	claims, err := jwt.Decode(token, c.Config.SecretKey)
 	if err != nil {
 		ctx.JSON(http.StatusForbidden, gin.H{
-			"message": err.Error(),
+			"message": "Invalid token",
 		})
+		return
 	}
 
 	user := c.UserService.Get(claims.UserID)

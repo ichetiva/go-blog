@@ -45,8 +45,7 @@ func (s UserService) Authorize(username, password string) (string, error) {
 		return "", errors.New("user not found")
 	}
 
-	password, _ = hash.HashPassword(password)
-	if user.Password != password {
+	if !hash.MatchPasswords(password, user.Password) {
 		return "", errors.New("passwords mismatch")
 	}
 
