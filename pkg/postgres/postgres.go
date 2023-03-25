@@ -14,6 +14,13 @@ type User struct {
 	Password string
 }
 
+type Post struct {
+	gorm.Model
+	User    User `gorm:"embeded"`
+	Title   string
+	Content string
+}
+
 func NewDB(config *config.Config) (*gorm.DB, error) {
 	dsn := fmt.Sprintf(
 		"postgres://%s:%s@%s:5432/%s?sslmode=disable",

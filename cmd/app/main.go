@@ -18,11 +18,15 @@ func main() {
 	}
 
 	db.AutoMigrate(&postgres.User{})
+	db.AutoMigrate(&postgres.Post{})
 
 	router := gin.Default()
 
 	userController := controllers.NewUserController(config, db)
 	userController.Register(router)
+
+	postController := controllers.NewPostController(config, db)
+	postController.Register(router)
 
 	router.Run()
 }
