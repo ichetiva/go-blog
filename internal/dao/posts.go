@@ -10,11 +10,12 @@ type PostDAO struct {
 }
 
 type IPostDAO interface {
-	Get(postID int) *postgres.Post
+	Get(postID uint) *postgres.Post
 	Create(user *postgres.User, title string, content string) *postgres.Post
+	Delete(postID uint) error
 }
 
-func (dao *PostDAO) Get(postID int) *postgres.Post {
+func (dao *PostDAO) Get(postID uint) *postgres.Post {
 	var post postgres.Post
 	result := dao.DB.Where("id = ?", postID).First(&post)
 	if result.Error != nil {
@@ -32,4 +33,9 @@ func (dao *PostDAO) Create(user *postgres.User, title string, content string) *p
 	}
 	dao.DB.Create(&post)
 	return &post
+}
+
+func (dao *PostDAO) Delete(postID uint) error {
+	result := dao.DB.Where("id = ?", postID).Delete(&postgres.Post{})
+	return result.Error
 }

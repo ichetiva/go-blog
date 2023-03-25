@@ -12,8 +12,9 @@ type PostService struct {
 }
 
 type IPostService interface {
-	Get(postID int) *postgres.Post
+	Get(postID uint) *postgres.Post
 	Create(userID uint, title string, content string) *postgres.Post
+	Delete(userID uint, postID uint) bool
 }
 
 func NewPostService(db *gorm.DB) IPostService {
@@ -23,11 +24,27 @@ func NewPostService(db *gorm.DB) IPostService {
 	}
 }
 
-func (s PostService) Get(postID int) *postgres.Post {
+func (s PostService) Get(postID uint) *postgres.Post {
 	return s.PostDAO.Get(postID)
 }
 
 func (s PostService) Create(userID uint, title string, content string) *postgres.Post {
 	user := s.UserDAO.GetByID(userID)
 	return s.PostDAO.Create(user, title, content)
+}
+
+func (s PostService) Delete(userID uint, postID uint) bool {
+	user := s.UserDAO.GetByID(userID)
+	post := s.PostDAO.Get(postID)
+
+	if post == nil {
+		return false
+	}
+
+	if post.UserID != user.ID {
+		return false
+	}
+
+	err := s.PostDAO.Delete(postID)
+	return err == nil
 }

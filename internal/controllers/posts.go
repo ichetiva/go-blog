@@ -30,6 +30,7 @@ func NewPostController(config *config.Config, db *gorm.DB) Controller {
 func (c PostController) Register(router *gin.Engine) {
 	router.GET("/posts/get", c.GetPostView)
 	router.POST("/posts/create", c.CreatePostView)
+	router.DELETE("/posts/delete", c.DeletePostView)
 }
 
 func (c PostController) GetPostView(ctx *gin.Context) {
@@ -41,7 +42,7 @@ func (c PostController) GetPostView(ctx *gin.Context) {
 		return
 	}
 
-	postID, err := strconv.Atoi(postIDString)
+	postID, err := strconv.ParseUint(postIDString, 10, 32)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{
 			"message": "Non-valid post ID",
@@ -49,7 +50,7 @@ func (c PostController) GetPostView(ctx *gin.Context) {
 		return
 	}
 
-	post := c.PostService.Get(postID)
+	post := c.PostService.Get(uint(postID))
 	if post == nil {
 		ctx.JSON(http.StatusNotFound, gin.H{
 			"message": "Post not found",
@@ -81,5 +82,34 @@ func (c PostController) CreatePostView(ctx *gin.Context) {
 	post := c.PostService.Create(claims.UserID, data.Title, data.Content)
 	ctx.JSON(http.StatusOK, gin.H{
 		"data": post,
+	})
+}
+
+func (c PostController) DeletePostView(ctx *gin.Context) {
+	var data schemes.ReqDeletePost
+	if err := ctx.BindJSON(&data); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"message": "Non-valid data was received",
+		})
+	}
+
+	token := ctx.Request.Header.Get("Token")
+	claims, err := jwt.Decode(token, c.Config.SecretKey)
+	if err != nil {
+		ctx.JSON(http.StatusForbidden, gin.H{
+			"message": "Invalid token",
+		})
+		return
+	}
+
+	ok := c.PostService.Delete(claims.UserID, data.PostID)
+	if !ok {
+		ctx.JSON(http.StatusForbidden, gin.H{
+			"message": "You haven't permissions to delete this post",
+		})
+		return
+	}
+	ctx.JSON(http.StatusOK, gin.H{
+		"status": ok,
 	})
 }
