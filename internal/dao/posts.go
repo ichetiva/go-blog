@@ -10,14 +10,17 @@ type PostDAO struct {
 }
 
 type IPostDAO interface {
-	Get(postID int) (*postgres.Post, error)
+	Get(postID int) *postgres.Post
 	Create(user *postgres.User, title string, content string) *postgres.Post
 }
 
-func (dao *PostDAO) Get(postID int) (*postgres.Post, error) {
+func (dao *PostDAO) Get(postID int) *postgres.Post {
 	var post postgres.Post
 	result := dao.DB.Where("id = ?", postID).First(&post)
-	return &post, result.Error
+	if result.Error != nil {
+		return nil
+	}
+	return &post
 }
 
 func (dao *PostDAO) Create(user *postgres.User, title string, content string) *postgres.Post {

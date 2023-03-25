@@ -20,7 +20,10 @@ func (dao *UserDAO) Create(username, password string) *postgres.User {
 		Username: username,
 		Password: password,
 	}
-	dao.DB.Create(&user)
+	result := dao.DB.Create(&user)
+	if result.Error != nil {
+		return nil
+	}
 	return &user
 }
 

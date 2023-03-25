@@ -24,11 +24,7 @@ func NewPostService(db *gorm.DB) IPostService {
 }
 
 func (s PostService) Get(postID int) *postgres.Post {
-	post, err := s.PostDAO.Get(postID)
-	if err != nil {
-		return nil
-	}
-	return post
+	return s.PostDAO.Get(postID)
 }
 
 func (s PostService) Create(userID uint, title string, content string) *postgres.Post {

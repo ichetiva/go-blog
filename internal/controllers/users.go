@@ -49,6 +49,12 @@ func (c UserController) SignUpView(ctx *gin.Context) {
 	}
 
 	user := c.UserService.Create(data.Username, data.Password)
+	if user == nil {
+		ctx.JSON(http.StatusConflict, gin.H{
+			"message": "User already exist",
+		})
+		return
+	}
 	ctx.JSON(http.StatusOK, gin.H{
 		"data": user,
 	})
