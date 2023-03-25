@@ -29,6 +29,7 @@ func NewPostController(config *config.Config, db *gorm.DB) Controller {
 
 func (c PostController) Register(router *gin.Engine) {
 	router.GET("/posts/get", c.GetPostView)
+	router.POST("/posts/create", c.CreatePostView)
 }
 
 func (c PostController) GetPostView(ctx *gin.Context) {
