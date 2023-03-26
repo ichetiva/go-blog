@@ -5,7 +5,12 @@
 ```shell
 git clone https://github.com/ichetiva/go-blog.git
 ```
-2. Running
+2. Rename `.env.simple` to `.env` and setting it
+3. Create docker network (just once)
 ```shell
-go run ./cmd/app
+docker network create blog
+```
+4. Running
+```shell
+docker-compose up --build
 ```
