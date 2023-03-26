@@ -5,10 +5,15 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/ichetiva/go-blog/config"
+	"github.com/ichetiva/go-blog/docs"
 	"github.com/ichetiva/go-blog/internal/controllers"
 	"github.com/ichetiva/go-blog/pkg/postgres"
+	swaggerfiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
+// @title Blog API
+// @version 1.0
 func main() {
 	config := config.NewConfig()
 
@@ -22,11 +27,18 @@ func main() {
 
 	router := gin.Default()
 
-	userController := controllers.NewUserController(config, db)
-	userController.Register(router)
+	docs.SwaggerInfo.BasePath = "/api"
 
-	postController := controllers.NewPostController(config, db)
-	postController.Register(router)
+	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
+
+	api := router.Group("/api")
+	{
+		userController := controllers.NewUserController(config, db)
+		userController.Register(api)
+
+		postController := controllers.NewPostController(config, db)
+		postController.Register(api)
+	}
 
 	router.Run()
 }

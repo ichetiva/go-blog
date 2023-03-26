@@ -27,12 +27,18 @@ func NewPostController(config *config.Config, db *gorm.DB) Controller {
 	}
 }
 
-func (c PostController) Register(router *gin.Engine) {
+func (c PostController) Register(router *gin.RouterGroup) {
 	router.GET("/posts/get", c.GetPostView)
 	router.POST("/posts/create", c.CreatePostView)
 	router.DELETE("/posts/delete", c.DeletePostView)
 }
 
+// @description Get post
+// @tags posts
+// @accept json
+// @produce json
+// @param postId query integer true "Post ID"
+// @router /posts/get [get]
 func (c PostController) GetPostView(ctx *gin.Context) {
 	postIDString, ok := ctx.GetQuery("postId")
 	if !ok {
@@ -62,6 +68,14 @@ func (c PostController) GetPostView(ctx *gin.Context) {
 	})
 }
 
+// @description Create post
+// @tags posts
+// @accept json
+// @produce json
+// @param Token header string true "Access token"
+// @param title body string true "Title"
+// @param content body string true "Content"
+// @router /posts/create [post]
 func (c PostController) CreatePostView(ctx *gin.Context) {
 	var data schemes.ReqCreatePost
 	if err := ctx.BindJSON(&data); err != nil {
@@ -85,6 +99,13 @@ func (c PostController) CreatePostView(ctx *gin.Context) {
 	})
 }
 
+// @description Delete post
+// @tags posts
+// @accept json
+// @produce json
+// @param Token header string true "Access token"
+// @param post_id body integer true "Post ID"
+// @router /posts/delete [delete]
 func (c PostController) DeletePostView(ctx *gin.Context) {
 	var data schemes.ReqDeletePost
 	if err := ctx.BindJSON(&data); err != nil {

@@ -12,5 +12,5 @@ type BaseController struct {
 }
 
 type Controller interface {
-	Register(router *gin.Engine)
+	Register(router *gin.RouterGroup)
 }

@@ -26,12 +26,20 @@ func NewUserController(config *config.Config, db *gorm.DB) Controller {
 	}
 }
 
-func (c UserController) Register(router *gin.Engine) {
+func (c UserController) Register(router *gin.RouterGroup) {
 	router.POST("/users/sign-up", c.SignUpView)
 	router.POST("/users/sign-in", c.SignInView)
 	router.GET("/users/me", c.GetMeView)
 }
 
+// @description Sign up
+// @tags users
+// @accept json
+// @produce json
+// @param username body string true "Username"
+// @param password body string true "Password"
+// @param password1 body string true "Repeat password"
+// @router /users/sign-up [post]
 func (c UserController) SignUpView(ctx *gin.Context) {
 	var data schemes.ReqSignUp
 	if err := ctx.BindJSON(&data); err != nil {
@@ -60,6 +68,13 @@ func (c UserController) SignUpView(ctx *gin.Context) {
 	})
 }
 
+// @description Sign in
+// @tags users
+// @accept json
+// @produce json
+// @param username body string true "Username"
+// @param password body string true "Password"
+// @router /users/sign-in [post]
 func (c UserController) SignInView(ctx *gin.Context) {
 	var data schemes.ReqSignIn
 	if err := ctx.BindJSON(&data); err != nil {
@@ -84,6 +99,12 @@ func (c UserController) SignInView(ctx *gin.Context) {
 	})
 }
 
+// @description Get me
+// @tags users
+// @accept json
+// @produce json
+// @param Token header string true "Access token"
+// @router /users/me [get]
 func (c UserController) GetMeView(ctx *gin.Context) {
 	token := ctx.Request.Header.Get("Token")
 	claims, err := jwt.Decode(token, c.Config.SecretKey)

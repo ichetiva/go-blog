@@ -1,0 +1,140 @@
+info:
+  contact: {}
+  title: Blog API
+  version: "1.0"
+paths:
+  /posts/create:
+    post:
+      consumes:
+      - application/json
+      description: Create post
+      parameters:
+      - description: Access token
+        in: header
+        name: Token
+        required: true
+        type: string
+      - description: Title
+        in: body
+        name: title
+        required: true
+        schema:
+          type: string
+      - description: Content
+        in: body
+        name: content
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses: {}
+      tags:
+      - posts
+  /posts/delete:
+    delete:
+      consumes:
+      - application/json
+      description: Delete post
+      parameters:
+      - description: Access token
+        in: header
+        name: Token
+        required: true
+        type: string
+      - description: Post ID
+        in: body
+        name: post_id
+        required: true
+        schema:
+          type: integer
+      produces:
+      - application/json
+      responses: {}
+      tags:
+      - posts
+  /posts/get:
+    get:
+      consumes:
+      - application/json
+      description: Get post
+      parameters:
+      - description: Post ID
+        in: query
+        name: postId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses: {}
+      tags:
+      - posts
+  /users/me:
+    get:
+      consumes:
+      - application/json
+      description: Get me
+      parameters:
+      - description: Access token
+        in: header
+        name: Token
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses: {}
+      tags:
+      - users
+  /users/sign-in:
+    post:
+      consumes:
+      - application/json
+      description: Sign in
+      parameters:
+      - description: Username
+        in: body
+        name: username
+        required: true
+        schema:
+          type: string
+      - description: Password
+        in: body
+        name: password
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses: {}
+      tags:
+      - users
+  /users/sign-up:
+    post:
+      consumes:
+      - application/json
+      description: Sign up
+      parameters:
+      - description: Username
+        in: body
+        name: username
+        required: true
+        schema:
+          type: string
+      - description: Password
+        in: body
+        name: password
+        required: true
+        schema:
+          type: string
+      - description: Repeat password
+        in: body
+        name: password1
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses: {}
+      tags:
+      - users
+swagger: "2.0"
